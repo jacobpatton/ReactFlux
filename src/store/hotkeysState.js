@@ -6,6 +6,7 @@ import createSetter from "@/utils/nanostores"
 const defaultValue = {
   exitDetailView: ["esc"],
   fetchOriginalArticle: ["d"],
+  markAllAsRead: ["shift+a"],
   navigateToNextArticle: ["n", "j", "right"],
   navigateToNextUnreadArticle: ["shift+n", "shift+j", "ctrl+right"],
   navigateToPreviousArticle: ["p", "k", "left"],

@@ -7,7 +7,7 @@ import {
   IconStarFill,
 } from "@arco-design/web-react/icon"
 import { useStore } from "@nanostores/react"
-import { useEffect } from "react"
+import { forwardRef, useEffect, useImperativeHandle } from "react"
 
 import {
   getAllEntries,
@@ -31,7 +31,7 @@ const handleFilterChange = (value) => {
   updateSettings({ showStatus: value })
 }
 
-const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
+const FooterPanel = forwardRef(({ info, refreshArticleList, markAllAsRead }, ref) => {
   const { filterDate, isArticleListReady } = useStore(contentState)
   const { feedsData } = useStore(dataState)
   const { showStatus } = useStore(settingsState)
@@ -50,6 +50,8 @@ const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
       })
     }
   }
+
+  useImperativeHandle(ref, () => handleMarkAllAsRead)
 
   const handleFilteredMarkAsRead = async () => {
     const starred = showStatus === "starred"
@@ -170,6 +172,8 @@ const FooterPanel = ({ info, refreshArticleList, markAllAsRead }) => {
       </CustomTooltip>
     </div>
   )
-}
+})
+
+FooterPanel.displayName = "FooterPanel"
 
 export default FooterPanel

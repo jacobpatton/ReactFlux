@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm dev)",
+      "Bash(jj status:*)",
+      "Bash(jj describe:*)",
+      "Bash(jj bookmark:*)",
+      "Bash(jj log:*)",
+      "Bash(jj git export:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

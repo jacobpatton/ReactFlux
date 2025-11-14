@@ -6,7 +6,7 @@ import useKeyHandlers from "@/hooks/useKeyHandlers"
 import { contentState } from "@/store/contentState"
 import { duplicateHotkeysState, hotkeysState } from "@/store/hotkeysState"
 
-const useContentHotkeys = ({ handleRefreshArticleList }) => {
+const useContentHotkeys = ({ handleRefreshArticleList, markAllAsRead: handleMarkAllAsRead }) => {
   const { activeContent } = useStore(contentState)
   const duplicateHotkeys = useStore(duplicateHotkeysState)
   const hotkeys = useStore(hotkeysState)
@@ -35,10 +35,29 @@ const useContentHotkeys = ({ handleRefreshArticleList }) => {
 
   const removeConflictingKeys = (keys) => keys.filter((key) => !duplicateHotkeys.includes(key))
 
+  console.log("Registering hotkeys:", {
+    markAllAsRead: hotkeys.markAllAsRead,
+    afterFilter: removeConflictingKeys(hotkeys.markAllAsRead),
+    duplicateHotkeys,
+    handleMarkAllAsRead,
+  })
+
   useHotkeys(removeConflictingKeys(hotkeys.exitDetailView), exitDetailView)
 
   useHotkeys(removeConflictingKeys(hotkeys.fetchOriginalArticle), () =>
     fetchOriginalArticle(handleFetchContent),
+  )
+
+  useHotkeys(
+    removeConflictingKeys(hotkeys.markAllAsRead),
+    async () => {
+      const { infoFrom } = contentState.get()
+      if (infoFrom === "starred" || infoFrom === "history") {
+        return
+      }
+      await handleMarkAllAsRead?.()
+    },
+    [handleMarkAllAsRead],
   )
 
   useHotkeys(removeConflictingKeys(hotkeys.navigateToNextArticle), () => navigateToNextArticle())

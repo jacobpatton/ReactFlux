@@ -46,6 +46,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
   const [isSwipingLeft, setIsSwipingLeft] = useState(false)
   const [isSwipingRight, setIsSwipingRight] = useState(false)
   const cardsRef = useRef(null)
+  const markAllAsReadRef = useRef(null)
 
   const location = useLocation()
   const params = useParams()
@@ -89,7 +90,10 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     }
   }
 
-  useContentHotkeys({ handleRefreshArticleList: fetchArticleListWithRelatedData })
+  useContentHotkeys({
+    handleRefreshArticleList: fetchArticleListWithRelatedData,
+    markAllAsRead: () => markAllAsReadRef.current?.(),
+  })
 
   const handleSwiping = (eventData) => {
     setIsSwipingLeft(eventData.dir === "Left")
@@ -112,11 +116,11 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
     delta: 50 / swipeSensitivity,
     onSwiping: enableSwipeGesture
       ? (eventData) => {
-          if (globalThis.getSelection().toString()) {
-            return
-          }
-          handleSwiping(eventData)
+        if (globalThis.getSelection().toString()) {
+          return
         }
+        handleSwiping(eventData)
+      }
       : undefined,
     onSwiped: enableSwipeGesture ? handleSwiped : undefined,
     onSwipedLeft: enableSwipeGesture ? handleSwipeLeft : undefined,
@@ -216,6 +220,7 @@ const Content = ({ info, getEntries, markAllAsRead }) => {
           handleEntryClick={handleEntryClick}
         />
         <FooterPanel
+          ref={markAllAsReadRef}
           info={info}
           markAllAsRead={markAllAsRead}
           refreshArticleList={fetchArticleListWithRelatedData}
